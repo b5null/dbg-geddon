@@ -6,7 +6,6 @@ function resolveProcessObjectCallbacks() {
 
     log("[*] Walking PsProcessType->CallbackList object callbacks:\n");
 
-    // Step 1 — get _OBJECT_TYPE base from PsProcessType
     let ptrRes = ctl.ExecuteCommand("dqs nt!PsProcessType L1");
     let objTypeBase = "";
     for (let l of ptrRes) {
@@ -24,7 +23,6 @@ function resolveProcessObjectCallbacks() {
 
     log("[*] _OBJECT_TYPE base: 0x" + objTypeBase);
 
-    // Step 2 — get CallbackList head at base + 0xc8
     let headAddrRes = ctl.ExecuteCommand("? 0x" + objTypeBase + " + 0xc8");
     let headAddr = "";
     for (let l of headAddrRes) {
@@ -37,7 +35,6 @@ function resolveProcessObjectCallbacks() {
 
     log("[*] CallbackList head: 0x" + headAddr);
 
-    // Step 3 — read Flink from head
     let headRes = ctl.ExecuteCommand("dqs 0x" + headAddr + " L1");
     let flink = "";
     for (let l of headRes) {
@@ -50,14 +47,12 @@ function resolveProcessObjectCallbacks() {
 
     log("[*] First Flink: 0x" + flink + "\n");
 
-    // Step 4 — walk the list
     let current = flink;
     let count = 0;
     let maxIter = 64;
 
     while (count < maxIter) {
 
-        // Stop when we loop back to the list head
         if (current === headAddr) {
             log("[*] Reached list head - done.\n");
             break;
@@ -65,11 +60,6 @@ function resolveProcessObjectCallbacks() {
 
         log("[" + count + "] Entry: 0x" + current);
 
-        // Read 8 QWORDs from current entry
-        // offset 0x00 = Flink
-        // offset 0x08 = Blink
-        // offset 0x30 = PreOperation  (index 6)
-        // offset 0x38 = PostOperation (index 7)
         let dpsRes = ctl.ExecuteCommand("dqs 0x" + current + " L8");
         let lines = [];
         for (let l of dpsRes) {
@@ -89,15 +79,15 @@ function resolveProcessObjectCallbacks() {
             let sym = parts.slice(2).join(" ");
             let display = val + (sym ? " " + sym : "");
 
-            if (i === 0) nextFlink     = val;
-            if (i === 6) preCallback   = display;
-            if (i === 7) postCallback  = display;
+            if (i === 0) nextFlink    = val;
+            if (i === 5) preCallback  = display;   // offset 0x28
+            if (i === 6) postCallback = display;   // offset 0x30
         }
 
         if (preCallback && !preCallback.startsWith("0000000000000000"))
-            log("    Pre  Callback (0x30): " + preCallback);
+            log("    Pre  Callback (0x28): " + preCallback);
         if (postCallback && !postCallback.startsWith("0000000000000000"))
-            log("    Post Callback (0x38): " + postCallback);
+            log("    Post Callback (0x30): " + postCallback);
 
         log("");
 
