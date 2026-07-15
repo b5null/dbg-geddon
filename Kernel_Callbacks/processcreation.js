@@ -1,6 +1,6 @@
 "use strict";
 
-function resolvePspCallbacks() {
+function resolvePspProcessCallbacks() {
     const log = x => host.diagnostics.debugLog(x + "\n");
     const ctl = host.namespace.Debugger.Utility.Control;
 
