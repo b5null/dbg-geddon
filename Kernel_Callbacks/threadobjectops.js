@@ -68,8 +68,8 @@ function resolveThreadObjectCallbacks() {
         // Read 8 QWORDs from current entry
         // offset 0x00 = Flink
         // offset 0x08 = Blink
-        // offset 0x30 = PreOperation  (index 5)
-        // offset 0x38 = PostOperation (index 6)
+        // offset 0x28 = PreOperation  (index 5)
+        // offset 0x30 = PostOperation (index 6)
         let dpsRes = ctl.ExecuteCommand("dqs 0x" + current + " L8");
         let lines = [];
         for (let l of dpsRes) {
