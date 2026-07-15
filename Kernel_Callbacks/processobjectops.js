@@ -59,7 +59,7 @@ function resolveProcessObjectCallbacks() {
 
         // Stop when we loop back to the list head
         if (current === headAddr) {
-            log("[*] Reached list head — done.\n");
+            log("[*] Reached list head - done.\n");
             break;
         }
 
