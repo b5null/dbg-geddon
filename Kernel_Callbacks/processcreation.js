@@ -47,6 +47,6 @@ function resolvePspCallbacks() {
 
 function initializeScript() {
     return [
-        new host.functionAlias(resolvePspCallbacks, "resolvePspCallbacks")
+        new host.functionAlias(resolvePspProcessCallbacks, "resolvePspProcessCallbacks")
     ];
 }
