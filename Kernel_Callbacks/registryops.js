@@ -40,7 +40,7 @@ function resolveRegistryCallbacks() {
     while (count < maxIter) {
 
         if (current === headAddr) {
-            log("[*] Reached list head — done.\n");
+            log("[*] Reached list head - done.\n");
             break;
         }
 
